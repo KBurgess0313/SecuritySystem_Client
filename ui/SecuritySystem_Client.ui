@@ -23,6 +23,7 @@
       <property name="title">
        <string>All Cameras</string>
       </property>
+      <layout class="QGridLayout" name="cameraLayout"/>
      </widget>
     </item>
    </layout>

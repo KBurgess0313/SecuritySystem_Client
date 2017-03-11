@@ -2,8 +2,6 @@
 #define LOGINFORM_H
 
 #include <QWidget>
-#include <boost/signals2.hpp>
-#include <boost/bind.hpp>
 
 #include "Common\Types\Account.h"
 
@@ -16,15 +14,14 @@ class LoginForm : public QWidget
   Q_OBJECT
 
 public:
-  explicit LoginForm(QWidget *parent = 0);
+  explicit LoginForm( QWidget *parent = 0 );
   ~LoginForm();
 
 signals:
-  void successfulLogin();
+  void successfulLogin(const Common::Types::Account&);
 
 public slots:
   void attemptLogin();
-
 
 private:
   Ui::LoginForm *ui;

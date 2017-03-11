@@ -1,40 +1,33 @@
 #include "Monitor.h"
 
-Monitor::Monitor(const std::string& aCameraLogin,
-                 const std::string& aCameraPass,
-                 const std::string& aCameraIp,
-                 const std::string& aMyName,
+Monitor::Monitor(const Common::Types::CameraFeedPtr& aCamera,
                  QWidget *parent) :
-  Common::Types::CameraFeed(aCameraLogin,
-                            aCameraPass,
-                            aCameraIp),
-  mName(aMyName)
+  mCamera(aCamera)
 {
   mMonitorLbl = new QLabel(parent);
-  mMonitorLbl->setText("Test");
-
   QVBoxLayout* layout = new QVBoxLayout(parent);
 
   layout->addWidget(mMonitorLbl);
 
-  QGroupBox* grp = new QGroupBox(QString::fromStdString(mName), 
+  QGroupBox* grp = new QGroupBox(QString::fromStdString(mCamera->getName()), 
                                  parent);
   grp->setLayout(layout);
 
   QVBoxLayout* widgetLayout = new QVBoxLayout(this);
 
+  widgetLayout->setAlignment(Qt::AlignCenter);
   widgetLayout->addWidget(grp);
 
   setLayout(widgetLayout);
 
-  connect(this, SIGNAL(cameraFrame(const QPixmap&)), this, SLOT(receiveNewFrame(const QPixmap&)));
+  connect(mCamera.get(), &Common::Types::CameraFeed::cameraFrame, this, &Monitor::receiveNewFrame);
 
-  init();
+  mCamera->init();
 }
 
 Monitor::~Monitor()
 {
-  terminate();
+  mCamera->terminate();
 }
 
 void Monitor::receiveNewFrame(const QPixmap& frame)

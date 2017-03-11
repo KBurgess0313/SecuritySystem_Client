@@ -11,18 +11,18 @@ ConfigFilePtr ConfigFile::instance()
   return config;
 }
 
-Common::Types::AccountPtrList ConfigFile::getAccounts()
+Common::Types::AccountList ConfigFile::getAccounts()
 {
   using namespace boost::property_tree;
   using namespace Common::Types;
 
-  AccountPtrList out;
+  AccountList out;
 
   if(!mFile.empty())
   {
     for(const ptree::value_type& value : mFile.get_child("SecuritySystem.UserAccounts"))
     {
-      AccountPtr acct = AccountPtr(new Account(value));
+      Account acct =  Account(value);
       out.push_back(acct);
     }
   }
@@ -49,13 +49,13 @@ Common::Types::CameraFeedPtrList ConfigFile::getCameraFeeds()
 }
 
 ConfigFile::ConfigFile() :
-  //mFileName("/opt/SecuritySystem/config.xml"),
-  mFileName("/home/pi/Developer/SecuritySystem_UI/config/config.xml"),
   mFile()
 {
+  char* appdata = getenv("APPDATA");
+  mFileName = std::string(appdata) + "\\SecuritySystem\\config\\config.xml";
   try
   {
-  boost::property_tree::read_xml(mFileName, mFile);
+    boost::property_tree::read_xml(mFileName, mFile);
   }
   catch(std::exception e)
   {

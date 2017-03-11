@@ -23,11 +23,17 @@ void LoginForm::attemptLogin()
   using namespace Common::Types;
   ConfigFilePtr config = ConfigFile::instance();
 
-  AccountPtr acct = AccountPtr(new Account("Admin", 
-                                           "Burgess", 
-                                           "admin", 
-                                           "Scuba5199", 
-                                           Common::Types::Privelages::ADMIN, 
-                                           std::vector<std::string>()));
-  successfulLogin();
+  std::string login = ui->txtUsername->text().toStdString();
+  std::string passwd = ui->txtPassword->text().toStdString();
+
+  AccountList accounts = config->getAccounts();
+
+  for (auto it = accounts.begin(); it != accounts.end(); ++it)
+  {
+    if ((*it).isValidLogin(login, passwd))
+    {
+      emit successfulLogin(*it);
+      close();
+    }
+  }
 }

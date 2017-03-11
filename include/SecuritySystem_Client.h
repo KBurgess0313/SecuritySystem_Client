@@ -4,14 +4,15 @@
 
 #include "ui_SecuritySystem_Client.h"
 
-class LoginForm;
-
 namespace Common
 {
 namespace Types
 {
   struct Account;
   typedef boost::shared_ptr<Account> AccountPtr;
+
+  class CameraFeed;
+  typedef boost::shared_ptr<CameraFeed> CameraFeedPtr;
 } //namepace Common
 } //namepace Types
 
@@ -27,12 +28,12 @@ public:
     SecuritySystem_Client(QWidget *parent = Q_NULLPTR);
     ~SecuritySystem_Client();
 
-private slots:
-  void successfulLogin();
+public slots:
+  void successfulLogin(const Common::Types::Account&);
+  void addCameraToUi(const Common::Types::CameraFeedPtr&);
 
 private:
   Ui::SecuritySystem_ClientClass ui;
-  LoginForm* mLoginForm;
 
   MonitorPtrList mMonitors;
 };

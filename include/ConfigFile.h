@@ -6,7 +6,6 @@
 
 #include <boost/shared_ptr.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
 
 class ConfigFile;
 typedef boost::shared_ptr<ConfigFile> ConfigFilePtr;
@@ -15,7 +14,7 @@ class ConfigFile
 {
 public:
   static ConfigFilePtr instance();
-  Common::Types::AccountPtrList getAccounts();
+  Common::Types::AccountList getAccounts();
   Common::Types::CameraFeedPtrList getCameraFeeds();
 
 private:

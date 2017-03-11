@@ -2,56 +2,59 @@
 
 #include "Common/Types/Account.h"
 
+#include "ConfigFile.h"
+
 #include "Monitor.h"
 #include "LoginForm.h"
 
 #include <QGridLayout>
 
 #include <boost/bind.hpp>
+#include <boost/function.hpp>
+
 
 SecuritySystem_Client::SecuritySystem_Client(QWidget *parent)
     : QMainWindow(parent)
 {
   ui.setupUi(this);
-  successfulLogin();
- // mLoginForm = new LoginForm(this);
- // mLoginForm->show();
-
- // connect(mLoginForm, &LoginForm::successfulLogin, this, &SecuritySystem_Client::successfulLogin);
 }
 
 SecuritySystem_Client::~SecuritySystem_Client()
 {
 }
 
-void SecuritySystem_Client::successfulLogin()
+void SecuritySystem_Client::successfulLogin(const Common::Types::Account&)
 {
-  //mLoginForm->close();
-
   QGridLayout* grid = new QGridLayout(this);
 
-  int numCams = 8;
+  ConfigFilePtr config = ConfigFile::instance();
 
-  int numRows = sqrt(static_cast<double>(numCams));
-  int numCols = numRows;
+  Common::Types::CameraFeedPtrList cameras = config->getCameraFeeds();
 
-  if ((numRows * numCols) < numCams)
+  for(const Common::Types::CameraFeedPtr cam : cameras)
   {
-    numRows++;
+    addCameraToUi(cam);
   }
-
-  int count = 0;
-  for (int i = 0; i < numRows; ++i)
-  {
-    for (int j = 0; j < numCols; ++j)
-    {
-      std::string title = "Living Room" + QString::number(++count).toStdString();
-      Monitor* monitor = new Monitor("admin", "123456", "192.168.1.223", title, this);
-      grid->addWidget(monitor, i, j);
-    }
-  }
-
-  ui.cameraGroupBox->setLayout(grid);
 
   show();
+}
+
+void SecuritySystem_Client::addCameraToUi(const Common::Types::CameraFeedPtr& cam)
+{
+  static int cameraCount = 0;
+
+  QGridLayout* gridLayout = dynamic_cast<QGridLayout*>(ui.cameraGroupBox->layout());
+
+
+  if (!gridLayout)
+    return;
+
+  Monitor* monitor = new Monitor(cam, this);
+  
+  int row = (cameraCount & 2) >> 1;
+  int col = cameraCount & 1;
+
+  gridLayout->addWidget(monitor, row, col);
+
+  cameraCount++;
 }

@@ -13,15 +13,12 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
-class Monitor : public Common::Types::CameraFeed
+class Monitor : public QWidget
 {
   Q_OBJECT
 
 public:
-  Monitor(const std::string& aCameraLogin,
-          const std::string& aCameraPass,
-          const std::string& aCameraIp,
-          const std::string& aMyName,
+  Monitor(const Common::Types::CameraFeedPtr& aCamera,
           QWidget *parent = 0);
 
   ~Monitor();
@@ -33,7 +30,7 @@ private:
   Monitor();
 
 private:
-  std::string mName;
+  Common::Types::CameraFeedPtr mCamera;
   QLabel* mMonitorLbl;
 };
 
